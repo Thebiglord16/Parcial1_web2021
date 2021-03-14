@@ -1,12 +1,14 @@
 var cart = [];
 var itemTotal = 0;
+var totalPrice = 0;
 var burgers = document.querySelector("#burgers");
 var tacos = document.querySelector("#tacos");
 var salads = document.querySelector("#salads");
 var desserts = document.querySelector("#desserts");
 var drinks = document.querySelector("#drinks");
 var title = document.querySelector("#menuTitle");
-var cartLogo = document.querySelector("#cartItem")
+var cartLogo = document.querySelector("#cartItem");
+var cancel = document.querySelector("#cancelBtn");
 var burgerList = [];
 var tacosList = [];
 var saladsList = [];
@@ -69,6 +71,7 @@ cartLogo.addEventListener("click", ()=>{
         currentItemTh = document.createElement("th");
         currentItemTh.textContent = count;
         currentQuantityTd = document.createElement("td");
+        currentQuantityTd.id = "quantity" + count;
         currentQuantityTd.textContent = element.quantity;
         currentDescriptionTd = document.createElement("td");
         currentDescriptionTd.textContent = element.name;
@@ -76,15 +79,18 @@ cartLogo.addEventListener("click", ()=>{
         currentPriceTd.textContent = element.price;
         currentAmountTd = document.createElement("td");
         currentAmountTd.textContent = element.price * element.quantity;
+        currentAmountTd.id= "amount" + count;
         currentModifyTd = document.createElement("td");
         addButton = document.createElement("button");
         addButton.classList.add("btn");
         addButton.classList.add("btn-secondary");
         addButton.textContent = "+";
+        addButton.id = "btnAdd" +count;
         lessButton = document.createElement("button");
         lessButton.classList.add("btn");
         lessButton.classList.add("btn-secondary");
         lessButton.textContent = "-";
+        lessButton.id = "btnLess" +count;
         currentModifyTd.appendChild(addButton);
         currentModifyTd.appendChild(lessButton);
         currentTR.appendChild(currentItemTh);
@@ -102,11 +108,18 @@ cartLogo.addEventListener("click", ()=>{
     listaMenu.appendChild(titleHR2);
     listaMenu.appendChild(table);
     finOrden = document.createElement("div");
+    fin = document.createElement("p");
+    fin.id = "fin";
     finOrden.classList.add("row");
-    finOrden.textContent = "Total: $" + total;
+    fin.textContent = "Total: $" + total;
+    finOrden.appendChild(fin);
+    totalPrice = total;
+    buttonContainer = document.createElement("div");
+    buttonContainer.classList.add("btn-orden");
     cancelButton = document.createElement("button");
     cancelButton.classList.add("btn");
     cancelButton.classList.add("btn-danger");
+    cancelButton.type = "button";
     cancelButton.dataset.toggle = "modal";
     cancelButton.dataset.target ="#cancelModal";
     cancelButton.textContent = "cancel";
@@ -115,10 +128,55 @@ cartLogo.addEventListener("click", ()=>{
     confirmButton.classList.add("btn-succes");
     confirmButton.textContent = "Confirm Order";
     confirmButton.addEventListener("click", confirmar);
-    finOrden.appendChild(cancelButton);
-    finOrden.appendChild(confirmButton);
+    buttonContainer.appendChild(cancelButton);
+    buttonContainer.appendChild(confirmButton);
+    finOrden.appendChild(buttonContainer);
     listaMenu.appendChild(finOrden);
+    setBillEvents();
 })
+
+cancel.addEventListener("click", ()=>{
+    itemTotal = 0;
+    cart = [];
+    cartText.textContent = itemTotal + " items";
+    removeChilds();
+})
+
+function setBillEvents(){
+    for(let i = 0; i<cart.length; i++){
+        const current = i+1;
+        const currentItem = cart[i];
+        const lessBtn = document.querySelector("#btnLess"+current);
+        const addBtn = document.querySelector("#btnAdd"+current);
+        addBtn.addEventListener("click", (e)=>{
+            quantity = document.querySelector("#quantity"+current);
+            amount = document.querySelector("#amount"+current);
+            fin = document.querySelector("#fin");
+            currentItem.quantity +=1;
+            quantity.textContent = currentItem.quantity;
+            amount.textContent = currentItem.quantity * currentItem.price;
+            totalPrice += currentItem.price;
+            fin.textContent ="Total: $" + totalPrice;
+            itemTotal+=1;
+            cartText.textContent = itemTotal + " Items"
+        })
+        lessBtn.addEventListener("click", (e)=>{
+            quantity = document.querySelector("#quantity"+current);
+            amount = document.querySelector("#amount"+current);
+            fin = document.querySelector("#fin");
+            if(currentItem.quantity > 0){
+                currentItem.quantity -=1;
+                quantity.textContent = currentItem.quantity;
+                amount.textContent = currentItem.quantity * currentItem.price;
+                totalPrice -= currentItem.price;
+                fin.textContent ="Total: $" + totalPrice;
+                itemTotal-=1;
+                cartText.textContent = itemTotal + " Items"
+            }
+            
+        })
+    }
+}
 
 function removeChilds(){
     listaMenu.innerHTML='';

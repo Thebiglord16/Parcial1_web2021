@@ -13,6 +13,10 @@
     margin-left: 2%;
     margin-right: 3%;
 }
+.btn-orden{
+    margin-right: 20%;
+    align-self: right;
+}
 #navTitle{
     font-size: 30px;
     font-family: Satisfy-Regular;
