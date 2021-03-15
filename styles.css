@@ -1,3 +1,7 @@
+body{
+    position : relative;
+    min-height: 100vh;
+}
 @font-face {
     font-family: "Satisfy-Regular";
     src: url("Satisfy-Regular.ttf") format("truetype");
@@ -15,8 +19,18 @@
 }
 .btn-orden{
     margin-right: 20%;
+    margin-bottom: 2%;
+    margin-top: 2%;
     align-self: right;
 }
+.footer {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+    height: 2.5rem;
+  }
 #navTitle{
     font-size: 30px;
     font-family: Satisfy-Regular;
@@ -26,5 +40,10 @@
     margin-left: 0;
     margin-right: 0;
 }
-
+#price{
+    font-weight: bold;
+}
+#banner{
+    width: 100%;
+}
 

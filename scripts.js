@@ -1,32 +1,34 @@
-var cart = [];
-var itemTotal = 0;
-var totalPrice = 0;
-var burgers = document.querySelector("#burgers");
-var tacos = document.querySelector("#tacos");
-var salads = document.querySelector("#salads");
-var desserts = document.querySelector("#desserts");
-var drinks = document.querySelector("#drinks");
-var title = document.querySelector("#menuTitle");
-var cartLogo = document.querySelector("#cartItem");
-var cancel = document.querySelector("#cancelBtn");
-var burgerList = [];
-var tacosList = [];
-var saladsList = [];
-var dessertsList = [];
-var drinksList = [];
-var cartText = document.querySelector("#cart")
-var listaMenu = document.querySelector("#listaMenu")
-var menuLink = "https://gist.githubusercontent.com/josejbocanegra/9a28c356416badb8f9173daf36d1460b/raw/5ea84b9d43ff494fcbf5c5186544a18b42812f09/restaurant.json"
+let cart = [];
+let itemTotal = 0;
+let totalPrice = 0;
+let burgers = document.querySelector("#burgers");
+let tacos = document.querySelector("#tacos");
+let salads = document.querySelector("#salads");
+let desserts = document.querySelector("#desserts");
+let drinks = document.querySelector("#drinks");
+let title = document.querySelector("#menuTitle");
+let cartLogo = document.querySelector("#cartItem");
+let cancel = document.querySelector("#cancelBtn");
+let burgerList = [];
+let tacosList = [];
+let saladsList = [];
+let dessertsList = [];
+let drinksList = [];
+let cartText = document.querySelector("#cart");
+let listaMenu = document.querySelector("#listaMenu");
+let menuLink = "https://gist.githubusercontent.com/josejbocanegra/9a28c356416badb8f9173daf36d1460b/raw/5ea84b9d43ff494fcbf5c5186544a18b42812f09/restaurant.json";
 
-function request(url){
-    return new Promise((resolve, reject)=>{
+function request(url) {
+    return new Promise((resolve) => {
         let req = new XMLHttpRequest();
-        req.open('GET', url);
+        req.open("GET", url);
         req.onload = () =>{
-          if(req.status == 200) resolve(req.response);    
+            if(req.status == 200) {
+                resolve(req.response);
+            }   
         };
         req.send();
-      });
+    });
 }
 
 cartLogo.addEventListener("click", ()=>{
@@ -63,8 +65,8 @@ cartLogo.addEventListener("click", ()=>{
     tableTitle.appendChild(titleTR);
     table.appendChild(tableTitle);
     tableBody = document.createElement("tbody");
-    var count = 0;
-    var total = 0;
+    let count = 0;
+    let total = 0;
     cart.forEach(element =>{
         count +=1;
         currentTR = document.createElement("tr");
@@ -133,61 +135,71 @@ cartLogo.addEventListener("click", ()=>{
     finOrden.appendChild(buttonContainer);
     listaMenu.appendChild(finOrden);
     setBillEvents();
-})
+});
 
 cancel.addEventListener("click", ()=>{
     itemTotal = 0;
     cart = [];
     cartText.textContent = itemTotal + " items";
     removeChilds();
-})
+});
 
-function setBillEvents(){
-    for(let i = 0; i<cart.length; i++){
+function addItem(currentItem) {
+    const fin = document.querySelector("#fin");
+    totalPrice += currentItem.price;
+    itemTotal+=1;
+    fin.textContent ="Total: $" + totalPrice;
+    cartText.textContent = itemTotal + " Items";
+}
+
+function reduceItem(currentItem) {
+    const fin = document.querySelector("#fin");
+    totalPrice -= currentItem.price;
+    itemTotal-=1;
+    fin.textContent ="Total: $" + totalPrice;
+    cartText.textContent = itemTotal + " Items";
+}
+
+function setBillEvents() {
+    for(let i = 0; i<cart.length; i++) {
         const current = i+1;
         const currentItem = cart[i];
         const lessBtn = document.querySelector("#btnLess"+current);
         const addBtn = document.querySelector("#btnAdd"+current);
-        addBtn.addEventListener("click", (e)=>{
-            quantity = document.querySelector("#quantity"+current);
-            amount = document.querySelector("#amount"+current);
-            fin = document.querySelector("#fin");
+        addBtn.addEventListener("click", ()=> {
+            const quantity = document.querySelector("#quantity"+current);
+            const amount = document.querySelector("#amount"+current);       
             currentItem.quantity +=1;
             quantity.textContent = currentItem.quantity;
-            amount.textContent = currentItem.quantity * currentItem.price;
-            totalPrice += currentItem.price;
-            fin.textContent ="Total: $" + totalPrice;
-            itemTotal+=1;
-            cartText.textContent = itemTotal + " Items"
-        })
-        lessBtn.addEventListener("click", (e)=>{
-            quantity = document.querySelector("#quantity"+current);
-            amount = document.querySelector("#amount"+current);
-            fin = document.querySelector("#fin");
-            if(currentItem.quantity > 0){
-                currentItem.quantity -=1;
+            amount.textContent = currentItem.quantity * currentItem.price;           
+            addItem(currentItem);
+        });
+
+        lessBtn.addEventListener("click", () => {
+            const quantity = document.querySelector("#quantity"+current);
+            const amount = document.querySelector("#amount"+current);
+            if(currentItem.quantity > 0) {
+                currentItem.quantity -= 1;
                 quantity.textContent = currentItem.quantity;
                 amount.textContent = currentItem.quantity * currentItem.price;
-                totalPrice -= currentItem.price;
-                fin.textContent ="Total: $" + totalPrice;
-                itemTotal-=1;
-                cartText.textContent = itemTotal + " Items"
+                reduceItem(currentItem);
             }
             
-        })
+        });
     }
 }
 
-function removeChilds(){
-    listaMenu.innerHTML='';
+function removeChilds() {
+    listaMenu.innerHTML= "";
 }
 
-function confirmar(){
+function confirmar() {
+    // eslint-disable-next-line no-console
     console.log(cart);
 }
 
-function addMenuListener(component, list, componentName){
-    component.addEventListener("click", ()=>{
+function addMenuListener(component, list, componentName) {
+    component.addEventListener( "click", ()=> {
         removeChilds();
         title = document.createElement("h1");
         title.classList.add("titulo-menu");
@@ -195,19 +207,19 @@ function addMenuListener(component, list, componentName){
         titleHR1 = document.createElement("hr");
         titleHR2 = document.createElement("hr");
         items = document.createElement("div");
-        items.classList.add("row")
+        items.classList.add("row");
         list.forEach(element =>{
             card = createCard(element);
             items.appendChild(card);
-        })
+        });
         listaMenu.appendChild(titleHR1);
         listaMenu.appendChild(title);
         listaMenu.appendChild(titleHR2);
         listaMenu.appendChild(items);
-    })
+    });
 }
 
-function createCard(product){
+function createCard(product) {
     container = document.createElement("div");
     container.classList.add("col-sm-4");
     card = document.createElement("div");
@@ -224,60 +236,69 @@ function createCard(product){
     cardTitle.classList.add("card-title");
     cardTitle.textContent = product.name;
     cardDescription = document.createElement("p");
-    cardDescription.classList.add("card-title");
+    cardDescription.classList.add("card-text");
     cardDescription.textContent = product.description;
+    cardPrice = document.createElement("p");
+    cardPrice.id = "price";
+    cardPrice.classList.add("card-text");
+    cardPrice.textContent = "$" + product.price;
     button = document.createElement("a");
     button.classList.add("btn");
     button.classList.add("btn-primary");
-    button.classList.add("agregar")
+    button.classList.add("agregar");
     button.textContent = "Add to cart";
     button.addEventListener("click", ()=>{
         alreadyAdded = false; 
         cart.forEach(element=>{
-            if(element.name===product.name){
+            if(element.name===product.name) {
                 element.quantity +=1;
                 itemTotal +=1;
                 alreadyAdded = true;
             }
         });
-        if(!alreadyAdded){
+        if(!alreadyAdded) {
             item = product;
             item.quantity = 1;
             cart.push(item);
             itemTotal+=1;
-        };
+        }
         cartText.textContent = itemTotal + " items";
     }, true);
     card.appendChild(cardPicture);
     cardBody.appendChild(cardTitle);
     cardBody.appendChild(cardDescription);
+    cardBody.appendChild(cardPrice);
     cardBody.appendChild(button);
     card.appendChild(cardBody);
     container.appendChild(card);
     return container;
 }
-function startApp(){
+function startApp() {
     request(menuLink).then((response)=>{
         response = JSON.parse(response);
         response.forEach(element =>{
-            if(element.name==="Burguers") burgerList = element.products;
-            else if(element.name==="Tacos") tacosList = element.products;
-            else if(element.name==="Salads") saladsList = element.products;
-            else if(element.name==="Desserts") dessertsList = element.products;
-            else if(element.name==="Drinks and Sides") drinksList = element.products;
-        })
-        console.log("carta:");
-        console.log(burgerList);
-        console.log(tacosList);
-        console.log(saladsList);
-        console.log(dessertsList);
-        console.log(drinksList);
+            if(element.name==="Burguers") {
+                burgerList = element.products;
+            }
+            else if(element.name==="Tacos") { 
+                tacosList = element.products;
+            }
+            else if(element.name==="Salads") {
+                saladsList = element.products;
+            }
+            else if(element.name==="Desserts") {
+                dessertsList = element.products;
+            }
+            else if(element.name==="Drinks and Sides") {
+                drinksList = element.products;
+            }
+        });
         addMenuListener(burgers, burgerList, "Burgers");
         addMenuListener(tacos, tacosList, "Tacos");
         addMenuListener(salads, saladsList, "Salads");
         addMenuListener(desserts, dessertsList, "Desserts");
         addMenuListener(drinks, drinksList, "Drinks and Sides");
-    })
+    });
 }
 
 startApp();
